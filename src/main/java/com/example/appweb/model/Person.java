@@ -1,19 +1,14 @@
-package com.example.appweb;
+package com.example.appweb.model;
 
+@Entity
 public class Person {
 
+    @Id
+    private Integer id;
+
     private String name;
+
     private String sexo;
-
-    private Integer Id;
-
-    public Integer getId() {
-        return Id;
-    }
-
-    public void setId(Integer id) {
-        Id = id;
-    }
 
     public String getSexo() {
         return sexo;
@@ -29,7 +24,13 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
-
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
