@@ -1,11 +1,10 @@
 package com.example.appweb.controller;
 
 import com.example.appweb.model.Person;
-import org.springframework.stereotype.Service;
+import org.rootframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class Controller {
 
