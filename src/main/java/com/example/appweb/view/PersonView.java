@@ -1,11 +1,12 @@
 package com.example.appweb.view;
 
+import com.example.appweb.controller.Controller;
 import com.example.appweb.model.Person;
-import org.rootframework.beans.factory.annotation.Autowired;
-import org.rootframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 
 import javax.websocket.server.PathParam;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
