@@ -1,5 +1,6 @@
 package com.example.appweb.controller;
 
+import com.example.appweb.model.AccountType;
 import com.example.appweb.model.Conta;
 import com.example.appweb.model.ContaCorrentePF;
 import com.example.appweb.model.Person;
@@ -23,16 +24,33 @@ public class BancoController implements ContaCorrente{
         return null;
     }
 
-    public ContaCorrentePF criarConta(String name) throws Exception {
+    public ContaCorrentePF criarConta(String name, String accountType) throws Exception {
         ContaCorrentePF contaCorrentePF = new ContaCorrentePF();
-        number++;
-        contaCorrentePF.setNumeroConta(number);
-        Person person =controller.findPerson(name);
-        if(person != null){
+        StringBuilder message = new StringBuilder();
+        if(accountType == null){
+            message.append("\n Necessário informar o tipo da conta!");
+        }
+        switch (accountType){
+            case "POUPANCA" :
+                contaCorrentePF.setAccountType(AccountType.CONTA_POUPANCA);
+                break;
+            case "CORRENTE" :
+                contaCorrentePF.setAccountType(AccountType.CONTA_CORRENTE);
+            default:
+                message.append("\n Tipo da conta não é suportado!");
+        }
+        Person person = controller.findPerson(name);
+        if(person != null && contaCorrentePF.getError() == null){
+            number++;
+            contaCorrentePF.setNumeroConta(number);
             contaCorrentePF.setPerson(person);
             bancoRepository.save(contaCorrentePF);
-        }else{
-            throw new Exception("Pessoa não cadastrada");
+        }else if(contaCorrentePF.getError() == null){
+            message.append("\n Pessoa ");
+            message.append(name).append(" Pessoa informada não foi cadastrada");
+        }
+        if(!message.isEmpty()){
+            contaCorrentePF.setError(message.toString());
         }
 
         return contaCorrentePF;
@@ -50,6 +68,7 @@ public class BancoController implements ContaCorrente{
         return null;
     }
 
+
     @Override
     public void depositar(Double quantidade, Conta conta) {
         Double total = conta.getSaldo() + quantidade ;
@@ -57,8 +76,22 @@ public class BancoController implements ContaCorrente{
     }
 
     @Override
-    public void transferir(Double quantidade, Conta conta) {
+    public String transferir(Long contaOrigem, Long contaDestino, Double valor) {
+        String message = "";
+        ContaCorrentePF destino = bancoRepository.findById(contaDestino).get();
+        ContaCorrentePF origem = bancoRepository.findById(contaOrigem).get();
 
+        if(origem.getSaldo() >= valor){
+            destino.setSaldo(destino.getSaldo() + valor);
+            origem.setSaldo(origem.getSaldo() - valor);
+            bancoRepository.save(destino);
+            bancoRepository.save(origem);
+            message = "A conta do(a) " + destino.getPerson().getName() + " recebeu a transferência no valor de R$ " + valor;
+        }else{
+            message = message + " Saldo insuficiente para a operação";
+        }
+
+        return message;
     }
 
     @Override

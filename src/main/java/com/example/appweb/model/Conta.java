@@ -1,5 +1,6 @@
 package com.example.appweb.model;
 
+//@Entity @Table(name = "conta")
 public abstract class Conta {
 
     private Long numeroConta;
@@ -16,7 +17,7 @@ public abstract class Conta {
         this.numeroConta = numeroConta;
     }
 
-       public Double getSaldo() {
+    public Double getSaldo() {
         return saldo;
     }
 
